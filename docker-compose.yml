@@ -1,0 +1,31 @@
+version: "3"
+ 
+services:
+
+ meilisearch:
+   image: 'getmeili/meilisearch:latest'
+   container_name: meilisearch-dev
+   ports:
+       - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+   volumes:
+       - 'vol-meilisearch:/data.ms'
+   networks:
+       - app-network
+   healthcheck:
+       test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
+       retries: 3
+       timeout: 5s
+   env_file:
+      - ./meilisearch.env
+  
+ 
+# Docker Volumes
+volumes:
+  vol-meilisearch:
+ 
+# Docker Networks
+networks:
+  app-network:
+    driver: bridge
+ 
+
